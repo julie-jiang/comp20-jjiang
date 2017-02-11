@@ -4,7 +4,7 @@
  */
 /* Display top left section of ralphy */
 @media only screen 
-    and (min-device-width: 1401px) {
+    and (min-width: 1401px) {
         .ralphy {
             background: url(ralphy.gif) 0px 0px;
             width: 250px;
@@ -14,8 +14,8 @@
 
 /* Display top right section of ralphy */
 @media only screen
-    and (min-device-width: 1201px) 
-    and (max-device-width: 1400px) {
+    and (min-width: 1201px) 
+    and (max-width: 1400px) {
         .ralphy {
             background: url(ralphy.gif) -250px 0px;
             width: 250px;
@@ -26,8 +26,8 @@
 
 /* Display middle left section of ralphy */
 @media only screen 
-    and (min-device-width: 1001px) 
-    and (max-device-width: 1200px) {
+    and (min-width: 1001px) 
+    and (max-width: 1200px) {
         .ralphy {
             background: url(ralphy.gif) 0px -186px;
             width: 250px;
@@ -38,8 +38,8 @@
 
 /* Display middle right section of ralphy */
 @media only screen 
-    and (min-device-width: 801px) 
-    and (max-device-width: 1000px) {
+    and (min-width: 801px) 
+    and (max-width: 1000px) {
         .ralphy {
             background: url(ralphy.gif) -250px -186px;
             width: 250px;
@@ -50,8 +50,8 @@
 
 /* Display bottom left section of ralphy */
 @media only screen 
-    and (min-device-width: 601px) 
-    and (max-device-width: 800px) {
+    and (min-width: 601px) 
+    and (max-width: 800px) {
         .ralphy {
             background: url(ralphy.gif) 0px -372px;
             width: 250px;
@@ -60,7 +60,7 @@
 }
 /* Display middle right section of ralphy */
 @media only screen 
-    and (max-device-width: 600px) {
+    and (max-width: 600px) {
         .ralphy {
             background: url(ralphy.gif) -250px -372px;
             width: 250px;
