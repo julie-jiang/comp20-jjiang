@@ -1,8 +1,8 @@
-/*.ralphy {
-    background-image: url("ralphy.gif");
-    width: 250px;
-    height: 186px;
-}*/
+/* Responsive design lab
+ * COMP 20 Spring 2017
+ * By: Julie Jiang (yjiang06)
+ */
+/* Display top left section of ralphy */
 @media only screen 
     and (min-device-width: 1401px) {
         .ralphy {
@@ -12,6 +12,7 @@
         }
 }
 
+/* Display top right section of ralphy */
 @media only screen
     and (min-device-width: 1201px) 
     and (max-device-width: 1400px) {
@@ -23,6 +24,7 @@
 
 }
 
+/* Display middle left section of ralphy */
 @media only screen 
     and (min-device-width: 1001px) 
     and (max-device-width: 1200px) {
@@ -33,6 +35,8 @@
         }
 
 }
+
+/* Display middle right section of ralphy */
 @media only screen 
     and (min-device-width: 801px) 
     and (max-device-width: 1000px) {
@@ -44,6 +48,7 @@
 
 }
 
+/* Display bottom left section of ralphy */
 @media only screen 
     and (min-device-width: 601px) 
     and (max-device-width: 800px) {
@@ -53,7 +58,7 @@
             height: 186px;
         }
 }
-
+/* Display middle right section of ralphy */
 @media only screen 
     and (max-device-width: 600px) {
         .ralphy {
