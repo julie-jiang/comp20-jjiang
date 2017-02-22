@@ -1,0 +1,12 @@
+body {
+    text-align: center;
+}
+#title {
+    font-family: Helvetica, Arial;
+    color: red;
+    text-transform: uppercase;
+}
+
+h2 {
+    font-family: "PT Serif";
+}
