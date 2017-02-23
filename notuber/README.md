@@ -4,7 +4,7 @@ For this assignment, I implemented a pseudo ride-hailing web app with a few APIs
 
 I correctly utilized all required APIs in order to make this work.
 
-I did not collaborate or discuss this assignment with anyone, although I did ask on Piazza for clarification. I also searched Stack Overflow for examples of JavaScript usage. In particular, I frequently referenced [this post](http://stackoverflow.com/questions/14560999/using-the-haversine-formula-in-javascript) as per suggested in the specs.
+I did not collaborate or discuss this assignment with anyone, although I did ask on Piazza for clarification. I also searched Stack Overflow for examples of JavaScript usage. In particular, I frequently referenced [this post](http://stackoverflow.com/questions/14560999/using-the-haversine-formula-in-javascript) as per suggested in the specs. In addition, I borrowed a lot of Ming's code from his Google Maps API example.
 
 I spent approximately 3 hours working on this project.
 

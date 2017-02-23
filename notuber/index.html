@@ -59,9 +59,10 @@
                     addMarker(marker);  
                     
 
-
+                    // Base on the database API response, add corresponding vehicles or passengers to map
                     loadData(function(responseText) {
                         data = JSON.parse(responseText);
+                        // If I am a driver, then add all the passengers
                         if (data.passengers) {
 
                             for (var i = 0; i < data.passengers.length; i++) {
@@ -79,7 +80,7 @@
                                 });
                                 addMarker(marker);
                             }
-                            
+                        // Else if I'm a passenger, then add all the drivers
                         } else {
                             
                             for (var i = 0; i < data.vehicles.length; i++) {
