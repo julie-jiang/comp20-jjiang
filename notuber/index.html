@@ -9,6 +9,7 @@
                 var myLat = 0;
                 var myLng = 0;
                 var meter2mile = 0.0006214;
+                var myusername = "aSOqNo4S";
                
                 
                 var me = new google.maps.LatLng(myLat, myLng);
@@ -20,6 +21,8 @@
                 var map;
                 var marker;
                 var infowindow = new google.maps.InfoWindow();
+
+                var icons = {me: "assets/me.png", person: "assets/person.png", car: "assets/car.png"};
                 
                 function init() {
                     map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
@@ -27,7 +30,6 @@
 
                     
                 }
-                
                 function getMyLocation() {
                     if (navigator.geolocation) { // the navigator.geolocation object is supported on your browser
                         navigator.geolocation.getCurrentPosition(function(position) {
@@ -50,69 +52,80 @@
                     // Create a marker
                     marker = new google.maps.Marker({
                         position: me,
-                        title: "Here I Am!"
+                        title: "Here I Am!",
+                        icon: icons["me"]
                     });
                     marker.setMap(map);
-                        
-                    // Open info window on click of marker
-                    google.maps.event.addListener(marker, 'click', (function(marker) {
-                        return function() {
-                            infowindow.setContent(marker.title);
-                            infowindow.open(map, marker);
-                        }
-                    }) (marker));
+                    addMarker(marker);  
+                    
+
+
                     loadData(function(responseText) {
-                        console.log(responseText);
                         data = JSON.parse(responseText);
-                        console.log(data);
                         if (data.passengers) {
-                            console.log("im a driver");
-                            var infowindow = new google.maps.InfoWindow();
 
                             for (var i = 0; i < data.passengers.length; i++) {
-                                console.log("adding passenger", i);
                                 var pos = new google.maps.LatLng(data.passengers[i].lat, data.passengers[i].lng);
-                                console.log("computing distance between pos: lat = ", pos.lat(), "lng = ", pos.lng(), " and me: lat = ", me.lat(), "lng = ", me.lng());
 
                                 var distance = google.maps.geometry.spherical.computeDistanceBetween(pos, me) * meter2mile;
-                                console.log("distance = ", distance);
+                                
                                 marker = new google.maps.Marker ({
                                     position: pos,
                                     map: map,
                                     title: ("User " + data.passengers[i].username +
-                                            " is in need of a black car! " +
-                                            "Distance: " + distance.toFixed(1) + " miles")
+                                            " is hailing a ride! " +
+                                            "Distance from you: " + distance.toFixed(1) + " miles"),
+                                    icon: icons["person"]
                                 });
-                                google.maps.event.addListener(marker, 'click', (function(marker, i) {
-                                    return function() {
-                                      infowindow.setContent(marker.title);
-                                      infowindow.open(map, marker);
-                                    }
-                                }) (marker, i));
+                                addMarker(marker);
                             }
                             
                         } else {
-                            console.log("im a passenger")
+                            
+                            for (var i = 0; i < data.vehicles.length; i++) {
+                                var pos = new google.maps.LatLng(data.vehicles[i].lat, data.vehicles[i].lng);
+
+                                var distance = google.maps.geometry.spherical.computeDistanceBetween(pos, me) * meter2mile;
+                                
+                                marker = new google.maps.Marker ({
+                                    position: pos,
+                                    map: map,
+                                    title: ("Vehicle " + data.vehicles[i].username +
+                                            " is looking for a passenger! " +
+                                            "Distance from you: " + distance.toFixed(1) + " miles"),
+                                    icon: icons["car"]
+                                });
+                                addMarker(marker);
+                            }
                         }
                     });
                     
                 }
-                function loadData(cb){
+                // Call database API to load data, and send data back to callback function
+                function loadData(callback){
                     var request = new XMLHttpRequest();
                     var myurl = "https://defense-in-derpth.herokuapp.com/submit";
-                    var params = "username=aSOqNo4S&lat=" + myLat + "&lng=" + myLng;
+                    var params = "username=" + myusername + "&lat=" + myLat + "&lng=" + myLng;
 
                     request.onreadystatechange=function(){
                         if (request.readyState==4 && request.status==200){
-                            if(typeof cb === 'function' )
-                                cb(request.responseText);
+                            if(typeof callback === 'function' )
+                                callback(request.responseText);
                         }
                     }
                     request.open("POST", myurl, true);
                     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    console.log("params: ", params);
                     request.send(params);
 
+                }
+                // Open info window on click of marker
+                function addMarker(marker) {
+                    google.maps.event.addListener(marker, 'click', (function(marker) {
+                        return function() {
+                          infowindow.setContent(marker.title);
+                          infowindow.open(map, marker);
+                        }
+                    }) (marker));
                 }
                 
             </script>                                               
