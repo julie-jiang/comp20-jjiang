@@ -75,7 +75,7 @@
                                     map: map,
                                     title: ("User " + data.passengers[i].username +
                                             " is hailing a ride! " +
-                                            "Distance from you: " + distance.toFixed(1) + " miles"),
+                                            "Distance from you: " + distance.toFixed(4) + " miles"),
                                     icon: icons["person"]
                                 });
                                 addMarker(marker);
@@ -93,7 +93,7 @@
                                     map: map,
                                     title: ("Vehicle " + data.vehicles[i].username +
                                             " is looking for a passenger! " +
-                                            "Distance from you: " + distance.toFixed(1) + " miles"),
+                                            "Distance from you: " + distance.toFixed(4) + " miles"),
                                     icon: icons["car"]
                                 });
                                 addMarker(marker);
