@@ -1,0 +1,2 @@
+# COMP 20 Lab 7
+I correctly rewrote the code in this [example](https://tuftsdev.github.io/WebProgramming/examples/ajax/messages.html) with jQuery. I did not collaborated with anyone, although I frequently referenced the [jQuery API documentations](http://api.jquery.com/). This lab took me approximately 15 minutes.
