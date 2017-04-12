@@ -12,7 +12,7 @@
                 var myusername = "aSOqNo4S";
                
                 
-                var me = new google.maps.LatLng(myLat, myLng);
+                var me;
                 var myOptions = {
                     zoom: 13, // The larger the zoom number, the bigger the zoom
                     center: me,
@@ -52,7 +52,7 @@
                     // Create a marker
                     marker = new google.maps.Marker({
                         position: me,
-                        title: "Here I Am!",
+                        title: ("Here I Am! I am" + myusername),
                         icon: icons["me"]
                     });
                     marker.setMap(map);
@@ -62,10 +62,17 @@
                     // Base on the database API response, add corresponding vehicles or passengers to map
                     loadData(function(responseText) {
                         data = JSON.parse(responseText);
+                        console.log("response: " + data);
                         // If I am a driver, then add all the passengers
                         if (data.passengers) {
+                            
 
                             for (var i = 0; i < data.passengers.length; i++) {
+                                console.log("username: " + data.passengers[i].username +
+                                            " lat: " + data.passengers[i].lat +
+                                            " lng: " + data.passengers[i].lng +
+                                            " created_at: " + data.passengers[i].created_at +
+                                            " _id: " + data.passengers[i]._id );
                                 var pos = new google.maps.LatLng(data.passengers[i].lat, data.passengers[i].lng);
 
                                 var distance = google.maps.geometry.spherical.computeDistanceBetween(pos, me) * meter2mile;
@@ -82,6 +89,7 @@
                             }
                         // Else if I'm a passenger, then add all the drivers
                         } else {
+                            console.log(data.vehicles);
                             
                             for (var i = 0; i < data.vehicles.length; i++) {
                                 var pos = new google.maps.LatLng(data.vehicles[i].lat, data.vehicles[i].lng);
@@ -105,7 +113,8 @@
                 // Call database API to load data, and send data back to callback function
                 function loadData(callback){
                     var request = new XMLHttpRequest();
-                    var myurl = "https://defense-in-derpth.herokuapp.com/submit";
+                    // var myurl = "https://defense-in-derpth.herokuapp.com/submit";
+                    var myurl = "https://afternoon-bastion-67239.herokuapp.com/submit";
                     var params = "username=" + myusername + "&lat=" + myLat + "&lng=" + myLng;
 
                     request.onreadystatechange=function(){
@@ -116,6 +125,7 @@
                     }
                     request.open("POST", myurl, true);
                     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    console.log("sending params: " + params);
                     request.send(params);
 
                 }
