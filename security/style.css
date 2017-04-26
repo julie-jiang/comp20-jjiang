@@ -1,0 +1,10 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.stress {
+    font-style: italic;
+}

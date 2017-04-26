@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="utf-8" />
+            <title>Security and Privacy Assesment - Julie Jiang </title>
+            <link rel="stylesheet" href="style.css" type="text/css" />
+        </head>
+
+        <body>
+            <h1> Comp 20 Spring 2017</h1>
+            <h2> Assignemnt 4 Security and Privacy Assessment by Julie Jiang (UTLN: yjiang06)
+            <h2>Introduction</h2>
+            
+            <p> This is a security and privacy assessment of Ming Chow's <a href = "https://defense-in-derpth.herokuapp.com">Not Uber server</a>. This server contains a database of the most recent information of vehicles and passengers of the Black Car service. It also has a few APIs that developers could use, including a <code> POST /sumit </code> route, a <code> GET /vehicle.json </code> route, and a <code> GET /</code> route. </p>
+
+            <h2>Methodology</h2>
+
+            <p> For this assignment, I enlisted the white box testing technique. Unfortunately, due to the fact that I didn't know my customer would be Ming, I already carefully looked over his source code before I began any testings. Therefore, it was not feasible for me to do any unbiased black box testing. </p>
+
+            <p> Since there are three APIs, I focused on hacking one API at a time. I mostly used <code> curl </code> to run my hacks, but sometimes I write short and sweet <code> JavaScript </code> embedded in an <code> HTML </code> when I get lazy running <code> curls </code>. </p>
+
+            <h2>Abstract of Findings </h2>
+
+            <p> Out of the three vulnerabilities I found, two of them are XSS attacks and one of them is a MongoDB injection. However, all three problems inherently lie in the fact that Ming did not validate the input coming from the client side. These security and privacy loopholes allow me to do all sorts of weird stuff imaginable with <code> JavaScript </code> when user opens <code>https://defense-in-derpth.herokuapp.com</code>, grants me access to information I should not have, and permit me to alter information stored in MongoDB. </p>
+
+            <h2>Issues Found </h2>
+                <ol>
+                    <li> 
+                        <p><strong> What?</strong> This first hack is a simple XSS via the <code> POST /submit </code> API.</p>
+                        <p> <strong> Where?</strong> The problem is that when the <code> POST /submit </code> API receives URL encoded parameters, it does not verify that the <code> username </code> is indeed a string. Given this, and because of CORS, it allows us to initiate XSS attacks by sending scripts to the server via <code> POST /submit </code>. When the page <code>https://defense-in-derpth.herokuapp.com</code> is opened via <code> GET /</code>, the script will be rendered and ran. </p>
+                        <p><strong> Severity. </strong> Since this is a XSS vulnerability, I believe the stakes are quite high. Imagine all the things we can do to if we get to run any sort of script we'd like!</p>
+                        <p> <strong> Description. </strong> Knowing that it permits CORS, I knew that XSS had to be possible. To find which loophole I could take advantage of, I scanned through Ming's code and took advantage of the fact that the username is not validated anywhere. </p>
+                        <p> <strong> Proof. </strong> To illustrate this, I sent the following request to the server: </p>
+                        <code> $ curl --data "username=%3Cscript%3Ealert%28%22Youre%20Hacked%22%29%3C%2Fscript%3E&lat=89&lng=122" -X POST https://defense-in-derpth.herokuapp.com/submit </code> </p>
+
+                        <p>They information under the <code>username</code> field is really the following snippet encoded in URL:</p>
+                        <code> &ltscript&gtalert("Youre Hacked")&lt/script&gt</code>
+
+                        <p>When you open <code>https://defense-in-derpth.herokuapp.com</code>, this piece of code gets executed immediately, as shown below.</p> Other cool things we could include redirecting the webpage to somewhere else, such as a phishing site.
+
+                        <img src="hack1.png" alt="Proof of Hack 1">
+                        <p> <strong> Resolution. </strong> Resolving this is easy. Just validate the the username is a string, and not a piece of code. Concretely, there are several ways to do this. We could use <code> ejs </code>, which automatically does the string validation for you, or scan for the appearence of <code> &ltscript&gt</code>. Alternatively, we could get rid of CORS and find a safer, more reliable way to serve the server-side.</p>
+                    </li>
+                    <li> 
+                        <p><strong>What?</strong> This is another XSS attack, and is quite similar to the one previously mentioned. However, this one utilizes both the <code> POST /submit </code>API and the <code> GET / </code>route, and allows us to alter information stored in the database. Concretely, we can use an XSS to change the <code> lat </code>and <code> lng</code> fields of every known vehicle or passengers. </p>
+                        <p><strong>Where? </strong> The vulnerability is essentially the same as above. The only difference is that we can hide a XSS attack within another XSS attack, where the second XSS attack can do things such as alter the information stored in the database when the webpage <code>https://defense-in-derpth.herokuapp.com</code> is opened.</p>
+                        <p><strong> Severity.</strong> The problem is medicore in terms of severity because while it can protentially disrupt the data of any known vehicle and passenger as soon as the webpage is opened, the fact that the server allows CORS in the first place gives anyone the ability to do that.</p> However, once this code is kept in the database, it will <span class="stress"> always </span> be executed everytime the homepage is opened. This means that the data will always be <span class="stress">reset</span>. This could pose potential dangers to the users of the Black Car service. After all, what's good in a server that keeps losing data? 
+
+                        <p><strong> Description.</strong> We send the following <code> curl</code> to <code> POST /submit</code>:</p>
+                        <code>curl --data "username=%3Cscript%3E%0Avar%20req%20%3D%20new%20XMLHttpRequest()%3B%0Areq.open(%22POST%22%2C%20%22https%3A%2F%2Fdefense-in-derpth.herokuapp.com%2Fsubmit%22%2C%20true)%3B%0Areq.setRequestHeader(%22Content-type%22%2C%20%22application%2Fx-www-form-urlencoded%22)%3B%0Areq.send(%22username%3DJANET%26lat%3D3%26lng%3D3%22)%3B%0A%3C%2Fscript%3E&lat=9&lng=9" -X POST https://defense-in-derpth.herokuapp.com/submit</code>
+
+                        <p>The <code> username</code> field is the following snippet encoded in JavaScript:</p>
+                        <code>&ltscript&gt <br>
+                        var req = new XMLHttpRequest(); <br>
+                        req.open("POST", "https://defense-in-derpth.herokuapp.com/submit", true); <br>
+                        req.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); <br>
+                        req.send("username=JANET&lat=3&lng=3"); <br>
+                        &lt/script&gt</code>
+
+                        <p>After opening the webpage <code>https://defense-in-derpth.herokuapp.com</code>, this <code> POST request </code> will be sent and the <code> lat </code> and <code> lng </code> attributes of the vehicle <code> JANET </code> will be updated both to 3. </p>
+
+
+                        <p> <strong> Proof. </strong> The following is a screenshot of the <code> GET /vehicle.json </code> <span class="stress"> after </span> running the curl and opening the webpage to execute the embedded JS script. You can see that the <code> lat</code> and <code>lng</code> attributes have been updated to 3. </p>
+                        <img src="hack2.png" alt ="Proof of Hack 2">
+                        <p><strong>Resolution</strong> Same as the first hack.</p>
+                    </li>
+                    <li> 
+                        <p><strong>What?</strong> The last hack is a MongoDB injection hack. When sending a <code>GET</code> request to <code> /vehicle.json</code>, we're supposed to provide the name of an vehicle and it will return the data of that vehicle, if there are anything, or nothing. However, if we tweak the paramters a bit, we can take advantage of the MongoDB queries and expose other information stored in the database.</p>
+                        <p><strong>Where?</strong> The vulnerability is default in ExpressJS and the body-parser module. The string <code> username[$gt]=</code> is a special syntax that will match all data with username <span class="stress"> greater than </span> the provided username.</p>
+                        <p><strong>Severity.</strong> I don't think this vulnerabililty is too bad. After all, the client has access to all known vehicles already. </p>
+                        <p><strong>Description. </strong>This seems like a vulnerability that comes with MongoDB if you use ExpressJS and body-parser.</p>
+                        <p><strong>Proof</strong>. Going to the following url will return information on a vehicle that is <span class="stress">not</span> <code>JANET</code></p>
+                        <code>https://defense-in-derpth.herokuapp.com/vehicle.json?username[$ne]=JANET </code>
+                        <img src="hack3.png" alt="Proof of Hack 3">
+                        <p><strong>Resolution. </strong> Ditch body-parser and use some other parsing middlewear, or be extra careful when validating input from the client.</p>
+
+                    </li>
+                </ol>
+            <h2> Conclusion</h2>
+                Overall, Ming's server code is pretty secure. The biggest problem, CORS, is necessary sacrifice to make the server available to every driver and passenger. However, Ming could do a better job validating input to eliminate bad guys secretly putting scripts in their <code> POST </code> requests.
+
+            <h2>References</h2>
+            <code> http://blog.websecurify.com/2014/08/hacking-nodejs-and-mongodb.html</code>
+            <code>https://excess-xss.com/</code>
+
+            
+        </body>
+    </html> 
